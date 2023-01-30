@@ -9,7 +9,7 @@ const menuItems: string[] = ["Inbox", "Starred", "Send Email", "Drafts"];
 
 export const Sidebar: React.FC = () => {
 
-    const { sideMenuOpen, closeSideMenuFn } = useContext( UIContext );
+  const { sideMenuOpen, closeSideMenuFn } = useContext( UIContext );
 
   return (
     <Drawer anchor="left" open={ sideMenuOpen } onClose={closeSideMenuFn}>
