@@ -16,7 +16,7 @@ export const EntryList: React.FC<EntryListProps> = ({ status }) => {
 
   const entriesByStatus = useMemo(() => {
       return entries.filter(entry => entry.status === status)
-  }, [entries]);
+  }, [entries, status]);
 
   console.log(entriesByStatus);
 
@@ -26,7 +26,6 @@ export const EntryList: React.FC<EntryListProps> = ({ status }) => {
             <List sx={{ opacity: 1 }}>
                 {entriesByStatus.map(entry => <EntryCard key={entry._id} entry={entry}/>)}
             </List>
-
         </Paper>
     </div>
   )
