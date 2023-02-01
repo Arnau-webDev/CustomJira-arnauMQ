@@ -1,9 +1,10 @@
-import { PropsWithChildren, useReducer } from 'react';
+import { PropsWithChildren, useReducer, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { EntriesContext, entriesReducer } from './';
 
 import { Entry, EntryStatus } from '../../interfaces';
+import { entriesApi } from '../../apis';
 
 export interface EntriesState {
     entries: Entry[]
@@ -11,24 +12,7 @@ export interface EntriesState {
 
 const Entries_INITIAL_STATE: EntriesState = {
     entries: [
-        {
-            _id: uuidv4(),
-            description: 'Pending: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Saepe praesentium quo corrupti adipisci sit eum laborum, aperiam architecto sequi deserunt veniam facilis cum quam velit dolorem nobis ullam laboriosam. Consequatur?',
-            status: 'pending',
-            createdAt: Date.now()
-        },
-        {
-            _id: uuidv4(),
-            description: 'In Progress: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Saepe praesentium quo corrupti adipisci sit eum laborum, aperiam architecto sequi deserunt veniam facilis cum quam velit dolorem nobis ullam laboriosam. Consequatur?',
-            status: 'in-progress',
-            createdAt: Date.now() - 1000000
-        },
-        {
-            _id: uuidv4(),
-            description: 'Completed: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Saepe praesentium quo corrupti adipisci sit eum laborum, aperiam architecto sequi deserunt veniam facilis cum quam velit dolorem nobis ullam laboriosam. Consequatur?',
-            status: 'finished',
-            createdAt: Date.now() - 100000
-        }
+
     ],
 }
 
@@ -50,6 +34,16 @@ export const EntriesProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const updateEntry = (entry: Entry) => {
     dispatch({type: 'Entry - Update-Entry', payload: entry})
   };
+
+  const refreshEntries = async () => {
+    const { data } = await entriesApi.get<Entry[]>('/entries');
+    dispatch({type: 'Entry - Refresh-Entries', payload: data});
+  };
+
+  useEffect(() => {
+    refreshEntries();
+  }, [])
+  
 
   return (
     <EntriesContext.Provider value={{

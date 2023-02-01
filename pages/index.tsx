@@ -6,6 +6,7 @@ import { Grid, Card, CardHeader } from '@mui/material'
 import { EntryList, NewEntry } from "../components/ui";
 
 const HomePage: NextPage = function Home() {
+
   return (
     <Layout title="Home - OpenJira">
       <Grid container spacing={2} >
