@@ -12,9 +12,9 @@ const entrySchema = new Schema({
         enum: {
             values: ['pending', 'in-progress', 'finished'],
             message: '{VALUE} is not a permitted state'
-        } ,
-        required: true 
-    },
+        },
+        default: 'pending'
+    }
 });
 
 const EntryModel: Model<IEntry> = mongoose.models.Entry || mongoose.model('Entry', entrySchema);
