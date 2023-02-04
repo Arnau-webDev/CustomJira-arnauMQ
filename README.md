@@ -1,5 +1,5 @@
 # Next.js CustomJira App
-To start running locally, you will need the database to be running
+To start, you will need the database to be running locally
 ```
 docker-compose up -d
 ```
@@ -9,6 +9,12 @@ docker-compose up -d
 * MongoDB local URL:
 ```
 mongodb://localhost:27017/entriesdb
+```
+
+* Rebuild node modules and start nextJS dev enviroment
+```
+npm install
+npm run dev
 ```
 
 ## Configure env variables
