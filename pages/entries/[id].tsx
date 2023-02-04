@@ -1,6 +1,6 @@
 import { useState, ChangeEvent, useContext } from 'react';
-import { NextPage } from "next";
-import { GetServerSideProps } from 'next';
+import { NextPage, GetServerSideProps } from "next";
+import { useRouter } from 'next/router';
 
 import { Layout } from "../../components/layouts";
 
@@ -23,12 +23,12 @@ interface EntryPageProps {
 
 export const EntryPage: NextPage<EntryPageProps> = ({ entry }) => {
 
-    console.log(entry);
-
-    const { updateEntry } = useContext(EntriesContext);
+    const { updateEntry, deleteEntry } = useContext(EntriesContext);
 
     const [ inputValue, setInputValue ] = useState(entry.description);
     const [ status, setStatus ] = useState<EntryStatus>(entry.status);
+
+    const router = useRouter();
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
@@ -38,7 +38,7 @@ export const EntryPage: NextPage<EntryPageProps> = ({ entry }) => {
         setStatus(e.target.value as EntryStatus);
     };
 
-    const handleClick = () => {
+    const handleEntryUpdate = () => {
         if(inputValue.trim().length === 0) return;
 
         const updatedEntry: Entry = {
@@ -47,7 +47,13 @@ export const EntryPage: NextPage<EntryPageProps> = ({ entry }) => {
             description: inputValue
         } 
         updateEntry(updatedEntry, true);
+        router.push('/');
     };
+
+    const handleEntryDelete = () => {
+        deleteEntry(entry._id);
+        router.push('/');
+    }
 
   return (
     <Layout title='Single Entry'>
@@ -94,8 +100,8 @@ export const EntryPage: NextPage<EntryPageProps> = ({ entry }) => {
                             startIcon={ <SaveIcon />}
                             variant="contained"
                             fullWidth
-                            onClick={handleClick}
-                            disabled={inputValue.length <= 0}
+                            onClick={handleEntryUpdate}
+                            disabled={inputValue.length <= 0 || inputValue === entry.description}
                         >
                             Save
                         </Button>
@@ -104,12 +110,16 @@ export const EntryPage: NextPage<EntryPageProps> = ({ entry }) => {
             </Grid>
         </Grid>
 
-        <IconButton sx={{
-            position: 'fixed',
-            bottom: 30,
-            right: 30,
-            backgroundColor: 'error.dark'
-        }}>
+        <IconButton 
+            sx={{
+                position: 'fixed',
+                bottom: 30,
+                right: 30,
+                backgroundColor: 'error.dark'
+            }}
+            onClick={handleEntryDelete}
+        
+        >
             <DeleteIcon />
         </IconButton>
 

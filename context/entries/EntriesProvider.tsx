@@ -21,11 +21,18 @@ export const EntriesProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const { enqueueSnackbar } = useSnackbar();
   
   const addNewEntry = async ( description: string ) => {
-    
     try {
       const { data } = await entriesApi.post<Entry>('/entries', { description });
-  
       dispatch({ type: 'Entry - Add-Entry', payload: data });
+
+      enqueueSnackbar('Entry Created!', {
+        variant: 'info',
+        autoHideDuration: 1500,
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'right'
+        }
+      });
 
     } catch(error) {
       console.log({ error });
@@ -35,13 +42,11 @@ export const EntriesProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const updateEntry = async (entry: Entry, showSnackbar = false) => {
 
     const { _id: id, description, status } = entry;
-    
     dispatch({type: 'Entry - Update-Entry', payload: entry})
     
     try {
       await entriesApi.put<Entry>(`/entries/${id}`, { description, status });
 
-      // TODO: show snackbar
       if(showSnackbar) {
         enqueueSnackbar('Entry Updated!', {
           variant: 'success',
@@ -58,6 +63,26 @@ export const EntriesProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   };
 
+  const deleteEntry = async (id: string) => {
+    dispatch({type: 'Entry - Delete-Entry', payload: id});
+
+    try {
+      await entriesApi.delete(`/entries/${id}`);
+
+      enqueueSnackbar('Entry Deleted!', {
+        variant: 'success',
+        autoHideDuration: 1500,
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'right'
+        }
+      });
+    } 
+    catch(error) {
+      console.log({ error });
+    }
+  }
+
   const refreshEntries = async () => {
     const { data } = await entriesApi.get<Entry[]>('/entries');
     dispatch({type: 'Entry - Refresh-Entries', payload: data});
@@ -72,7 +97,9 @@ export const EntriesProvider: React.FC<PropsWithChildren> = ({ children }) => {
     <EntriesContext.Provider value={{
        ...state,
        addNewEntry,
-       updateEntry
+       updateEntry,
+       deleteEntry
+
     }}>
         { children }
     </EntriesContext.Provider>
