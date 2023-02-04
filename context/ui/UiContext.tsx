@@ -6,8 +6,6 @@ interface ContextProps {
     isDragging: boolean
 
     // Methods
-    openSideMenuFn: () => void,
-    closeSideMenuFn: () => void,
     setIsAddingEntry: (isAdding: boolean) => void,
     startDragging: () => void,
     stopDragging: () => void

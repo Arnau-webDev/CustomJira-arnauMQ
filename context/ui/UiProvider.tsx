@@ -17,9 +17,6 @@ export const UIProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
 const [state, dispatch] = useReducer(uiReducer, UI_INITIAL_STATE);
 
-const openSideMenuFn = () => dispatch({ type: 'UI - Open Sidebar'});
-const closeSideMenuFn = () => dispatch({ type: 'UI - Close Sidebar'});
-
 const setIsAddingEntry = (isAdding: boolean) => dispatch({ type: 'UI - Toggle Adding Entry', payload: isAdding});
 
 const startDragging = () => dispatch({ type: 'UI - Start Dragging'});
@@ -28,8 +25,6 @@ const stopDragging = () => dispatch({ type: 'UI - Stop Dragging'});
   return (
     <UIContext.Provider value={{
        ...state,
-       openSideMenuFn,
-       closeSideMenuFn,
        setIsAddingEntry,
        startDragging,
        stopDragging

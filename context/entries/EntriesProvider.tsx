@@ -2,8 +2,10 @@ import { PropsWithChildren, useReducer, useEffect } from 'react';
 
 import { EntriesContext, entriesReducer } from './';
 
-import { Entry, EntryStatus } from '../../interfaces';
+import { Entry } from '../../interfaces';
 import { entriesApi } from '../../apis';
+
+import { useSnackbar } from 'notistack';
 
 export interface EntriesState {
     entries: Entry[]
@@ -16,6 +18,7 @@ const Entries_INITIAL_STATE: EntriesState = {
 export const EntriesProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   const [state, dispatch] = useReducer(entriesReducer, Entries_INITIAL_STATE);
+  const { enqueueSnackbar } = useSnackbar();
   
   const addNewEntry = async ( description: string ) => {
     
@@ -29,7 +32,7 @@ export const EntriesProvider: React.FC<PropsWithChildren> = ({ children }) => {
     }
   };
 
-  const updateEntry = async (entry: Entry) => {
+  const updateEntry = async (entry: Entry, showSnackbar = false) => {
 
     const { _id: id, description, status } = entry;
     
@@ -38,6 +41,17 @@ export const EntriesProvider: React.FC<PropsWithChildren> = ({ children }) => {
     try {
       await entriesApi.put<Entry>(`/entries/${id}`, { description, status });
 
+      // TODO: show snackbar
+      if(showSnackbar) {
+        enqueueSnackbar('Entry Updated!', {
+          variant: 'success',
+          autoHideDuration: 1500,
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'right'
+          }
+        });
+      }
     } catch(error) {
       console.log({ error });
     }
